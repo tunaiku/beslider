@@ -73,7 +73,7 @@ Specify your image loading service. For example, if you work with Picasso in you
     // Example: import kotlinx.android.synthetic.main.activity_main.*
     myBeSlider.setAdapter(BesliderAdapter(mListImages))
 
-> 5. Add OnClickListener to your slider
+> 5. Add OnSlideClickListener to your slider
 
     myBeSlider.setSlideClickListener(object : OnSlideClickListener{ 
          override fun onSlideClick(position: Int) {  
