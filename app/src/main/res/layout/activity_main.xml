@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <app.beslider.com.ui.Slider
+        android:id="@+id/mySlider"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@color/defaultBanner"
+        app:beslider_animateIndicators="true"
+        app:beslider_defaultImage="1"
+        app:beslider_emptyImage="@layout/banner_preloader"
+        app:beslider_indicatorSize="8dp"
+        app:beslider_interval="5000"
+        app:beslider_loopSlides="true"
+        app:beslider_customSelectedIndicator="@drawable/ic_indicator_selected"
+        app:beslider_customUnselectedIndicator="@drawable/ic_default_indicator_unselected"/>
+
+</android.support.constraint.ConstraintLayout>

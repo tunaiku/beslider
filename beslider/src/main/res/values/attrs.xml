@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="beslider">
+        <attr name="beslider_hideIndicators" format="boolean" />
+        <attr name="beslider_indicatorSize" format="dimension" />
+        <attr name="beslider_customSelectedIndicator" format="reference" />
+        <attr name="beslider_customUnselectedIndicator" format="reference" />
+        <attr name="beslider_animateIndicators" format="boolean" />
+        <attr name="beslider_interval" format="integer" />
+        <attr name="beslider_loopSlides" format="boolean" />
+        <attr name="beslider_defaultImage" format="integer" />
+        <attr name="beslider_emptyImage" format="reference" />
+    </declare-styleable>
+</resources>
