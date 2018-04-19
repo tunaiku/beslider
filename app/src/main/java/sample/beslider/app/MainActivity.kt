@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         loadSlider()
     }
 
-    fun addImages() {
+    private fun addImages() {
         mListImages.add("https://i.annihil.us/u/prod/marvel/movies/blackpanther/social/assets/global_share_1200x630.jpg")
         mListImages.add("https://cdn.shopify.com/s/files/1/1211/8882/products/infanityWar_WEB_1024x1024.jpg?v=1522423111")
         mListImages.add("https://cdn.vox-cdn.com/thumbor/gI_IEw0_sFk9tnTf_pMJFJLjxYY=/0x0:1040x1300/1200x800/filters:focal(794x791:960x957)/cdn.vox-cdn.com/uploads/chorus_image/image/55235623/homecoming.0.jpg")
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
      * using kotlin synthetic extension
      * import kotlinx.android.synthetic.main.activity_main.*
      */
-    fun loadSlider() {
+    private fun loadSlider() {
         val beslider: Slider = findViewById(R.id.mySlider)
         Slider.init(LoadImageService())
         beslider.setAdapter(MySliderAdapter(mListImages))

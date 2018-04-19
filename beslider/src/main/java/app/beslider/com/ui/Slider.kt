@@ -38,11 +38,9 @@ class Slider : FrameLayout {
     var onSlideClickListener: OnSlideClickListener? = null
     var slideIndicatorsGroup: SlideIndicatorsGroup? = null
     var emptyView: View? = null
-
-    lateinit var adapter: SliderRecyclerViewAdapter
-    lateinit var sliderAdapter: SliderAdapter
-    lateinit var positionController: PositionController
-
+    var positionController: PositionController? = null
+    var adapter: SliderRecyclerViewAdapter? = null
+    var sliderAdapter: SliderAdapter? = null
     var pendingPosition = RecyclerView.NO_POSITION
     var selectedSlidePosition = 0
 
@@ -113,13 +111,13 @@ class Slider : FrameLayout {
 
                 if(!config!!.loopSlides) return
 
-                if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if(adapter != null && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     when(selectedSlidePosition) {
                         0 -> {
-                            recyclerView!!.scrollToPosition(adapter.itemCount - 2)
-                            onImageSlideChange(adapter.itemCount - 2)
+                            recyclerView!!.scrollToPosition(adapter!!.itemCount - 2)
+                            onImageSlideChange(adapter!!.itemCount - 2)
                         }
-                        adapter.itemCount - 1 -> {
+                        adapter!!.itemCount - 1 -> {
                             recyclerView!!.scrollToPosition(1)
                             onImageSlideChange(1)
                         }
@@ -148,8 +146,12 @@ class Slider : FrameLayout {
     }
 
     fun onImageSlideChange(position: Int) {
-        val userSlidePosition = positionController.getUserSlidePosition(position)
         selectedSlidePosition = position
+        var userSlidePosition = 0
+
+        if(positionController != null) {
+            userSlidePosition = positionController!!.getUserSlidePosition(position)
+        }
 
         if (slideIndicatorsGroup != null) {
             slideIndicatorsGroup!!.onSlideChange(userSlidePosition)
@@ -174,7 +176,9 @@ class Slider : FrameLayout {
     }
 
     fun setSelectedSlide(position: Int) {
-        setSelectedSlide(positionController.getRealSlidePosition(position), true)
+        if(positionController != null) {
+            setSelectedSlide(positionController!!.getRealSlidePosition(position), true)
+        }
     }
 
     private fun onAdapterAttached() {
@@ -191,10 +195,10 @@ class Slider : FrameLayout {
 
     fun setSlideClickListener(listener: OnSlideClickListener) {
         onSlideClickListener = listener
-        adapter.setSlideClickListener(listener)
+        if(adapter != null) adapter!!.setSlideClickListener(listener)
     }
 
-    fun getAdapter(): SliderAdapter {
+    fun getAdapter(): SliderAdapter? {
         return sliderAdapter
     }
 
@@ -218,21 +222,28 @@ class Slider : FrameLayout {
         recyclerView.isNestedScrollingEnabled = false
         val linearLayoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = linearLayoutManager
-        positionController = PositionController(sliderAdapter, config!!.loopSlides)
-        adapter = SliderRecyclerViewAdapter(sliderAdapter, sliderAdapter.getItemCount() > 1 && config!!.loopSlides, recyclerView.layoutParams, object : OnTouchListener {
-            @SuppressLint("ClickableViewAccessibility")
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                if(event!!.action == MotionEvent.ACTION_DOWN) {
-                    stopTimer()
-                } else if(event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_UP){
-                    startTimer()
-                }
-                return false
-            }
-        }, positionController)
 
-        recyclerView.adapter = adapter
-        positionController.setRecyclerViewAdapter(adapter)
+        if(sliderAdapter != null) {
+            positionController = PositionController(sliderAdapter!!, config!!.loopSlides)
+            adapter = SliderRecyclerViewAdapter(
+                    sliderAdapter!!,
+                    sliderAdapter!!.getItemCount() > 1 && config!!.loopSlides,
+                    recyclerView.layoutParams,
+                    object : OnTouchListener {
+                        @SuppressLint("ClickableViewAccessibility")
+                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                            if(event!!.action == MotionEvent.ACTION_DOWN) {
+                                stopTimer()
+                            } else if(event.action == MotionEvent.ACTION_CANCEL || event.action == MotionEvent.ACTION_UP){
+                                startTimer()
+                            }
+                            return false
+                        }
+                    }, positionController!!)
+
+            recyclerView.adapter = adapter
+            positionController!!.setRecyclerViewAdapter(adapter!!)
+        }
 
         selectedSlidePosition = if(config!!.loopSlides) 1 else 0
         recyclerView.scrollToPosition(selectedSlidePosition)
@@ -249,13 +260,15 @@ class Slider : FrameLayout {
         recyclerView.onFlingListener = null
         snapHelper.attachToRecyclerView(recyclerView)
 
-        if(slideIndicatorsGroup != null && sliderAdapter.getItemCount() > 1) {
-            if(indexOfChild(slideIndicatorsGroup) == -1) {
-                addView(slideIndicatorsGroup)
+        if(slideIndicatorsGroup != null && sliderAdapter != null) {
+            if(sliderAdapter!!.getItemCount() > 1) {
+                if (indexOfChild(slideIndicatorsGroup) == -1) {
+                    addView(slideIndicatorsGroup)
+                }
+                slideIndicatorsGroup!!.setSlides(sliderAdapter!!.getItemCount())
+                slideIndicatorsGroup!!.onSlideChange(0)
+                refreshIndicators()
             }
-            slideIndicatorsGroup!!.setSlides(sliderAdapter.getItemCount())
-            slideIndicatorsGroup!!.onSlideChange(0)
-            refreshIndicators()
         }
 
         if(emptyView != null) {
@@ -290,9 +303,11 @@ class Slider : FrameLayout {
         override fun run() {
             if (mContext is Activity) {
                 (mContext as Activity).runOnUiThread {
-                    val nextSlidePosition = positionController.getNextSlide(selectedSlidePosition)
-                    recyclerView.smoothScrollToPosition(nextSlidePosition)
-                    onImageSlideChange(nextSlidePosition)
+                    if(positionController != null) {
+                        val nextSlidePosition = positionController!!.getNextSlide(selectedSlidePosition)
+                        recyclerView.smoothScrollToPosition(nextSlidePosition)
+                        onImageSlideChange(nextSlidePosition)
+                    }
                 }
             }
         }
@@ -306,9 +321,9 @@ class Slider : FrameLayout {
 
     fun setLoopSlides(loopSlides: Boolean) {
         config!!.loopSlides = loopSlides
-        adapter.loop = loopSlides
-        positionController.loop = loopSlides
-        adapter.notifyDataSetChanged()
+        adapter!!.loop = loopSlides
+        positionController!!.loop = loopSlides
+        adapter!!.notifyDataSetChanged()
         recyclerView.scrollToPosition(if(loopSlides) 1 else 0)
         onImageSlideChange(if(loopSlides) 1 else 0)
     }
@@ -361,7 +376,7 @@ class Slider : FrameLayout {
 
             addView(slideIndicatorsGroup)
 
-            for (i in 0 until sliderAdapter.getItemCount()) {
+            for (i in 0 until sliderAdapter!!.getItemCount()) {
                 slideIndicatorsGroup?.onSlideAdd()
             }
         }
