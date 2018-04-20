@@ -84,6 +84,13 @@ Specify your image loading service. For example, if you work with Picasso in you
 ## Customize
 *- Documentation available soon -*
 
+## Proguard Setting
+
+> Add this code to your proguard-rules.pro
+
+    -dontwarn app.beslider.com.adapters.**  
+    -keep class app.beslider.com.adapters.** { *; }
+
 ## References
 
  - [Picasso](http://square.github.io/picasso/)
