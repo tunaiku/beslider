@@ -162,6 +162,7 @@ Specify your image loading service. For example, if you work with Picasso in you
 	    //.....
 	    
 	    Slider.init(BesliderLoadingService())
+        loadbanner()
 	}
 
 > 2. Create function for load the banner. mListImages is ArrayList<String?>()
