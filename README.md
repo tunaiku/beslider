@@ -165,7 +165,7 @@ Specify your image loading service. For example, if you work with Picasso in you
         loadbanner()
 	}
 
-> 2. Create function for load the banner. mListImages is ArrayList<String?>()
+> 2. Create function for load the banner. **mListImages is ArrayList<String?>()**
 
     fun loadbanner() {
 	    // bannerSlider is loaded using kotlin extension
