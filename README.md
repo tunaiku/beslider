@@ -82,7 +82,102 @@ Specify your image loading service. For example, if you work with Picasso in you
     })
 
 ## Customize
-*- Documentation available soon -*
+
+> Change slides interval (in milliseconds). For example: change slides for 3 second each. 
+
+    app:beslider_interval="3000"
+
+
+> Loop slides
+
+    app:beslider_loopSlides="true"
+
+> Change indicator size
+
+    app:beslider_indicatorSize="8dp"
+
+> Indicators are animated in default
+
+    app:beslider_animateIndicators="true"
+
+> Set default image for first show
+
+    app:beslider_defaultImage="1"
+
+> Add empty view when image not loaded
+
+    app:beslider_emptyImage="@layout/empty_view"
+
+> If you want to use custom indicator
+
+    app:beslider_customSelectedIndicator="@drawable/ic_banner_indicator_selected"  
+    app:beslider_customUnselectedIndicator="@drawable/ic_banner_indicator_unselected"
+
+## For full example:
+### XML
+> 1. Add this to your activity_main.xml
+
+    <app.beslider.com.ui.Slider  
+	    android:id="@+id/beslider"  
+	    android:layout_width="match_parent"  
+	    android:layout_height="350dp"  
+	    android:background="@drawable/banner_preloader"  
+	    app:beslider_animateIndicators="true"  
+	    app:beslider_defaultImage="1"  
+	    app:beslider_emptyImage="@layout/empty_view"  
+	    app:beslider_indicatorSize="8dp"  
+	    app:beslider_interval="5000"  
+	    app:beslider_loopSlides="true"  
+	    app:beslider_customSelectedIndicator="@drawable/ic_banner_indicator_selected"  
+	    app:beslider_customUnselectedIndicator="@drawable/ic_banner_indicator_unselected"/>
+
+> 2. Empty view layout: empty_view.xml
+
+    <LinearLayout 
+	    xmlns:android="http://schemas.android.com/apk/res/android"  
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"  
+	    android:orientation="vertical"  
+	    android:background="@color/colorDarkPrimary"  
+	    android:gravity="center">  
+  
+	    <ProgressBar  
+		    android:id="@+id/progress_bar"  
+		    android:layout_width="50dp"  
+		    android:layout_height="50dp"  
+		    android:layout_gravity="center"  
+		    android:indeterminate="true"  
+		    android:indeterminateDrawable="@drawable/progressbar" />
+		
+	</LinearLayout>
+
+
+### MainActivity.kt
+
+> 1. Setup init slider in onCreate()
+
+    override fun onCreate(savedInstanceState: Bundle?) {  
+	    super.onCreate(savedInstanceState)  
+	    
+	    //.....
+	    
+	    Slider.init(BesliderLoadingService())
+	}
+
+> 2. Create function for load the banner. mListImages is ArrayList<String?>()
+
+    fun loadbanner() {
+	    // bannerSlider is loaded using kotlin extension
+	    bannerSlider.setAdapter(BesliderAdapter(mListImages))
+	    bannerSlider.setSlideClickListener(object : OnSlideClickListener {
+		    override fun onSlideClick(position: Int) {
+			    toast("Image position $position clicked")
+		    }
+	    })
+    }
+
+> 3. Build your project. :)
+
 
 ## Proguard Setting
 
